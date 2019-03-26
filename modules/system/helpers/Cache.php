@@ -36,9 +36,7 @@ class Cache
      */
     public function clearCombiner()
     {
-        foreach (File::directories(storage_path().'/cms/combiner') as $directory) {
-            File::deleteDirectory($directory);
-        }
+        self::clearDir('/cms/combiner');
     }
 
     /*
@@ -46,9 +44,7 @@ class Cache
      */
     public function clearCache()
     {
-        foreach (File::directories(storage_path().'/cms/cache') as $directory) {
-            File::deleteDirectory($directory);
-        }
+        self::clearDir('/cms/cache');
     }
 
     /*
@@ -56,11 +52,23 @@ class Cache
      */
     public function clearTwig()
     {
-        foreach (File::directories(storage_path().'/cms/twig') as $directory) {
+        self::clearDir('/cms/twig');
+    }
+    /**
+     * Generic function for clearing directories
+     * Will check if directory exists before clearing it. If it does not,
+     * it will create it accordingly.
+     */
+    private static function clearDir($path)
+    {
+        $storagePath = storage_path().$path;
+        if (!file_exists($storagePath)) {
+            mkdir($storagePath, octdec('0'.config('cms.defaultMask.folder')), true);
+        }
+        foreach (File::directories($storagePath) as $directory) {
             File::deleteDirectory($directory);
         }
     }
-
     /*
      * Meta
      */
